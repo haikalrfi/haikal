@@ -1,0 +1,19 @@
+Drop your images in THIS folder, using these exact names.
+Until a file exists, the site shows a tidy placeholder naming it (nothing looks broken).
+
+Projects (landscape screenshots, ~1600x1000px):
+  cinematch.jpg          -> CINEMATCH app screenshot
+  mi-fathurrahman.jpg    -> MI Fathurrahman system screenshot
+  los-calisaros.jpg      -> Los Calisaros site screenshot
+
+Events (landscape photos, ~1200x750px; pick ones where you're visibly working):
+  cnblue.jpg
+  dream-theater.jpg
+  bryan-adams.jpg
+  blackpink.jpg
+  scream-or-dance.jpg
+  axis-nation-cup.jpg
+  nct-dream.jpg
+  dfuturo.jpg
+
+Keep each file under ~400 KB (compress at squoosh.app). Use .jpg, or update the name in index.html if you use .png.

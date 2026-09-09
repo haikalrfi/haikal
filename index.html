@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Muhammad Rofi Pasha Haikal — Data Analyst</title>
+  <meta name="description" content="Portfolio of Muhammad Rofi Pasha Haikal, a data analyst and informatics graduate in Jakarta. Projects in data cleaning, analysis, and modelling, including the CINEMATCH film recommender.">
+
+  <!-- Fonts: Bricolage Grotesque (display) + Hanken Grotesk (body). Loaded at runtime; GitHub Pages serves fine. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+  :root{
+    --bg:#0D1524;
+    --bg-deep:#0A101C;
+    --surface:#131F2E;
+    --surface-2:#182838;
+    --line:rgba(240,235,224,.12);
+    --line-2:rgba(240,235,224,.22);
+    --text:#F3EEE4;
+    --muted:#95A2B4;
+    --muted-2:#6E7C8E;
+    --accent:#E9AE4E;
+    --accent-2:#F0C173;
+    --accent-soft:rgba(233,174,78,.13);
+    --accent-line:rgba(233,174,78,.55);
+    --maxw:1120px;
+    --pad:clamp(20px,5vw,64px);
+    --display:"Bricolage Grotesque",Georgia,serif;
+    --body:"Hanken Grotesk",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:var(--body);font-size:17px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4{font-family:var(--display);font-weight:600;line-height:1.02;letter-spacing:-.02em;margin:0}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  ::selection{background:var(--accent);color:#1a1205}
+
+  /* filmic grain + soft vignette, fixed over the page */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(120% 80% at 50% -10%, rgba(233,174,78,.10), transparent 55%),
+               radial-gradient(140% 120% at 50% 120%, rgba(0,0,0,.45), transparent 60%);
+  }
+  .wrap{position:relative;z-index:1}
+  .container{max-width:var(--maxw);margin:0 auto;padding-inline:var(--pad)}
+
+  /* skip link + focus */
+  .skip{position:absolute;left:-999px;top:0;background:var(--accent);color:#1a1205;padding:10px 16px;border-radius:8px;z-index:100}
+  .skip:focus{left:12px;top:12px}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+  /* scroll progress */
+  .progress{position:fixed;top:0;left:0;height:2px;width:0;background:var(--accent);z-index:60;transition:width .1s linear}
+
+  /* NAV */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .3s,border-color .3s}
+  .nav.scrolled{background:rgba(10,16,28,.72);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .nav__in{max-width:var(--maxw);margin:0 auto;padding:16px var(--pad);display:flex;align-items:center;justify-content:space-between;gap:20px}
+  .brand{font-family:var(--display);font-weight:700;font-size:1.05rem;letter-spacing:.01em;display:flex;align-items:center;gap:10px}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+  .navlinks{display:flex;align-items:center;gap:28px}
+  .navlinks a{font-size:.95rem;color:var(--muted);transition:color .2s;position:relative;padding:4px 0}
+  .navlinks a::after{content:"";position:absolute;left:0;right:100%;bottom:-1px;height:1.5px;background:var(--accent);transition:right .25s ease}
+  .navlinks a:hover,.navlinks a.active{color:var(--text)}
+  .navlinks a.active::after,.navlinks a:hover::after{right:0}
+  .nav-cta{border:1px solid var(--line-2);padding:9px 18px;border-radius:100px;color:var(--text);font-size:.9rem;transition:border-color .2s,background .2s}
+  .nav-cta:hover{border-color:var(--accent);background:var(--accent-soft)}
+  .burger{display:none;background:none;border:0;cursor:pointer;padding:8px;color:var(--text)}
+  .burger span{display:block;width:22px;height:2px;background:currentColor;margin:5px 0;transition:.25s}
+  .nav.open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .nav.open .burger span:nth-child(2){opacity:0}
+  .nav.open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+  /* HERO */
+  .hero{min-height:100svh;display:flex;align-items:center;padding-top:96px;padding-bottom:64px;position:relative}
+  .hero__spot{position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background:radial-gradient(46% 55% at 22% 40%, rgba(233,174,78,.16), transparent 60%);
+    transform-origin:22% 40%;}
+  .hero .now{color:var(--accent);font-size:.9rem;letter-spacing:.06em;display:inline-flex;align-items:center;gap:9px;margin-bottom:26px}
+  .hero .now .live{width:7px;height:7px;border-radius:50%;background:var(--accent);position:relative}
+  .hero .now .live::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--accent-line);animation:ping 2.4s ease-out infinite}
+  @keyframes ping{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.9);opacity:0}}
+  .hero h1{font-size:clamp(2.7rem,8.2vw,6rem);font-weight:700;letter-spacing:-.035em;max-width:16ch}
+  .hero h1 .ln{display:block;overflow:hidden}
+  .hero h1 .ln > span{display:block}
+  .hero .lede{font-size:clamp(1.05rem,2vw,1.35rem);color:var(--muted);max-width:56ch;margin:30px 0 0;line-height:1.5}
+  .hero .lede b{color:var(--text);font-weight:600}
+  .hero .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:40px}
+  .btn{font-size:1rem;padding:14px 26px;border-radius:100px;font-weight:600;transition:transform .15s,background .2s,border-color .2s,color .2s;will-change:transform}
+  .btn-primary{background:var(--accent);color:#1a1205}
+  .btn-primary:hover{background:var(--accent-2);transform:translateY(-2px)}
+  .btn-ghost{border:1px solid var(--line-2);color:var(--text)}
+  .btn-ghost:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-2px)}
+  .hero .featured{margin-top:56px;display:inline-flex;align-items:baseline;gap:12px;color:var(--muted);font-size:.95rem;border-top:1px solid var(--line);padding-top:22px}
+  .hero .featured a{color:var(--text);border-bottom:1px solid var(--accent-line);padding-bottom:2px;transition:color .2s}
+  .hero .featured a:hover{color:var(--accent)}
+
+  /* SECTIONS */
+  section{scroll-margin-top:84px}
+  .band{padding:clamp(72px,11vw,140px) 0;border-top:1px solid var(--line)}
+  .head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:56px;flex-wrap:wrap}
+  .head h2{font-size:clamp(1.9rem,4.4vw,3rem)}
+  .head .idx{color:var(--muted-2);font-size:.9rem;font-variant-numeric:tabular-nums}
+  .lead-para{font-size:clamp(1.15rem,2.4vw,1.6rem);line-height:1.5;max-width:30ch;font-family:var(--display);font-weight:500;letter-spacing:-.01em}
+
+  /* ABOUT */
+  .about-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:clamp(32px,6vw,88px);align-items:start}
+  .about-copy p{margin:0 0 20px;color:var(--muted);max-width:60ch}
+  .about-copy p b{color:var(--text);font-weight:600}
+  .facts{border-top:1px solid var(--line)}
+  .facts .row{display:grid;grid-template-columns:auto 1fr;gap:20px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .facts dt{color:var(--muted-2);font-size:.9rem}
+  .facts dd{margin:0;color:var(--text);text-align:right;font-weight:500}
+  .facts dd .hl{color:var(--accent)}
+
+  /* PROJECTS */
+  .feature{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(28px,5vw,64px);align-items:center;margin-bottom:clamp(56px,8vw,96px)}
+  .feature .kicker{color:var(--accent);font-size:.9rem;letter-spacing:.04em;margin-bottom:16px}
+  .feature h3{font-size:clamp(1.7rem,3.6vw,2.6rem);margin-bottom:20px;letter-spacing:-.025em}
+  .feature p{color:var(--muted);margin:0 0 24px;max-width:52ch}
+  .tags{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:28px}
+  .tag{font-size:.82rem;color:var(--text);border:1px solid var(--line-2);padding:6px 13px;border-radius:100px;background:rgba(255,255,255,.02)}
+  .results{border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr)}
+  .results .cell{padding:18px 20px 18px 0;border-bottom:1px solid var(--line)}
+  .results .num{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,3vw,2.1rem);letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--text)}
+  .results .num.gold{color:var(--accent)}
+  .results .cap{color:var(--muted-2);font-size:.8rem;margin-top:4px}
+  .proj-links{display:flex;gap:22px;margin-top:26px}
+  .proj-links a{color:var(--text);font-size:.95rem;border-bottom:1px solid var(--accent-line);padding-bottom:3px;transition:color .2s}
+  .proj-links a:hover{color:var(--accent)}
+
+  /* media / image proof slot */
+  .media{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--surface);aspect-ratio:16/10}
+  .media img{width:100%;height:100%;object-fit:cover}
+  .feature .media img,.card .media img{object-fit:contain;background:var(--bg-deep)}
+  .media__label{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:8px;text-align:center;padding:20px;color:var(--muted-2);font-size:.82rem;
+    background:
+      linear-gradient(var(--surface),var(--surface)) padding-box,
+      repeating-linear-gradient(45deg,rgba(233,174,78,.06) 0 12px,transparent 12px 24px);}
+  .media__label b{color:var(--muted);font-weight:600;font-family:var(--display)}
+  .media__label .frame{width:30px;height:30px;border:1.5px solid var(--muted-2);opacity:.5;position:relative;border-radius:3px}
+  .media__label .frame::before,.media__label .frame::after{content:"";position:absolute;background:var(--muted-2);opacity:.6}
+  .media__label .frame::before{top:50%;left:-8px;right:-8px;height:1px}
+  .media__label .frame::after{left:50%;top:-8px;bottom:-8px;width:1px}
+  .media.is-empty img{display:none}
+  .media.is-empty .media__label{display:flex}
+
+  .subprojects{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,40px)}
+  .card{border:1px solid var(--line);border-radius:14px;padding:26px;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);transition:border-color .25s}
+  .card:hover{border-color:var(--line-2)}
+  .card .media{aspect-ratio:16/9;margin-bottom:22px}
+  .card h4{font-size:1.35rem;margin-bottom:10px;letter-spacing:-.02em}
+  .card p{color:var(--muted);font-size:.98rem;margin:0 0 18px}
+  .card .tags{margin-bottom:0}
+
+  /* EXPERIENCE — real chronological sequence, so a dated timeline is honest here */
+  .timeline{border-top:1px solid var(--line)}
+  .xp{display:grid;grid-template-columns:120px 1fr 200px;gap:clamp(16px,3vw,40px);padding:30px 0;border-bottom:1px solid var(--line);align-items:start;transition:background .25s}
+  .xp:hover{background:rgba(255,255,255,.015)}
+  .xp .when{color:var(--muted-2);font-size:.92rem;font-variant-numeric:tabular-nums;padding-top:3px}
+  .xp h4{font-size:1.28rem;letter-spacing:-.02em}
+  .xp .role{color:var(--accent);font-size:.9rem;margin:6px 0 10px}
+  .xp .role .venue{color:var(--muted);}
+  .xp p{margin:0;color:var(--muted);font-size:.96rem;max-width:52ch}
+  .xp .scale{margin-top:12px;display:inline-block;font-family:var(--display);font-weight:600;font-size:1.05rem;color:var(--text)}
+  .xp .scale span{color:var(--muted-2);font-family:var(--body);font-weight:400;font-size:.85rem;margin-left:6px}
+  .xp .thumb{aspect-ratio:16/10}
+
+  /* SKILLS */
+  .skills-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(28px,5vw,56px)}
+  .skillgroup{border-top:1px solid var(--line);padding-top:22px}
+  .skillgroup h4{font-size:1.1rem;color:var(--accent);margin-bottom:16px;font-family:var(--body);font-weight:600;letter-spacing:0}
+  .skillgroup .tags .tag{font-size:.9rem;padding:8px 15px}
+
+  /* EDUCATION */
+  .edu{display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,4vw,48px);align-items:baseline}
+  .edu .yr{color:var(--muted-2);font-variant-numeric:tabular-nums}
+  .edu h4{font-size:1.4rem;letter-spacing:-.02em}
+  .edu .school{color:var(--muted);margin:6px 0 4px}
+  .edu .gpa{color:var(--accent);font-family:var(--display);font-weight:600;display:inline-block;margin-bottom:6px}
+  .edu .course{color:var(--muted-2);font-size:.95rem;margin-top:14px;max-width:70ch;line-height:1.7}
+  .extras{margin-top:44px;border-top:1px solid var(--line);padding-top:24px;display:grid;gap:12px}
+  .extras .ex{color:var(--muted);font-size:.96rem}
+  .extras .ex b{color:var(--text);font-weight:600}
+
+  /* CONTACT */
+  .contact{padding:clamp(80px,13vw,160px) 0}
+  .contact .lead-para{max-width:22ch;margin-bottom:12px}
+  .contact .sub{color:var(--muted);max-width:48ch;margin:0 0 42px;font-size:1.1rem}
+  .mailto{display:inline-block;font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,5vw,3.4rem);letter-spacing:-.03em;color:var(--text);border-bottom:2px solid var(--accent-line);padding-bottom:6px;transition:color .25s,border-color .25s}
+  .mailto:hover{color:var(--accent);border-color:var(--accent)}
+  .socials{display:flex;flex-wrap:wrap;gap:26px;margin-top:44px}
+  .socials a{color:var(--muted);font-size:1rem;transition:color .2s;display:inline-flex;align-items:center;gap:8px}
+  .socials a:hover{color:var(--text)}
+  .socials a .b{width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:0;transition:opacity .2s}
+  .socials a:hover .b{opacity:1}
+
+  footer{border-top:1px solid var(--line);padding:36px 0 48px;background:var(--bg-deep)}
+  .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;color:var(--muted-2);font-size:.88rem}
+  .foot .made{color:var(--muted-2)}
+
+  /* load animation (one orchestrated moment) */
+  @keyframes rise{from{transform:translateY(105%)}to{transform:translateY(0)}}
+  @keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes spot{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+  .hero__spot{animation:spot 1.6s cubic-bezier(.2,.7,.2,1) both}
+  .hero h1 .ln > span{animation:rise .9s cubic-bezier(.22,1,.36,1) both}
+  .hero h1 .ln:nth-child(1) > span{animation-delay:.15s}
+  .hero h1 .ln:nth-child(2) > span{animation-delay:.28s}
+  .hero h1 .ln:nth-child(3) > span{animation-delay:.41s}
+  .hero .now{animation:fade .8s ease both;animation-delay:.05s}
+  .hero .lede{animation:fade .9s ease both;animation-delay:.55s}
+  .hero .cta-row{animation:fade .9s ease both;animation-delay:.7s}
+  .hero .featured{animation:fade .9s ease both;animation-delay:.82s}
+
+  /* RESPONSIVE */
+  @media (max-width:880px){
+    .navlinks{display:none}
+    .burger{display:block}
+    .nav.open .navlinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:flex-start;gap:4px;
+      background:rgba(10,16,28,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:16px var(--pad) 26px}
+    .nav.open .navlinks a{padding:12px 0;font-size:1.05rem;width:100%}
+    .nav.open .nav-cta{margin-top:8px}
+    .about-grid{grid-template-columns:1fr;gap:44px}
+    .feature{grid-template-columns:1fr}
+    .feature .media{order:-1}
+    .subprojects{grid-template-columns:1fr}
+    .xp{grid-template-columns:70px 1fr;}
+    .xp .thumb{grid-column:1 / -1;max-width:340px;margin-top:6px}
+    .skills-grid{grid-template-columns:1fr}
+    .results{grid-template-columns:1fr 1fr}
+    .facts dd{text-align:left}
+  }
+  @media (max-width:480px){
+    .results{grid-template-columns:1fr}
+    .results .cell + .cell{padding-left:0;border-left:0}
+    .edu{grid-template-columns:1fr;gap:6px}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .hero h1 .ln > span,.hero .now,.hero .lede,.hero .cta-row,.hero .featured,.hero__spot{opacity:1!important;transform:none!important}
+  }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#work">Skip to content</a>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+
+  <header class="nav" id="nav">
+    <div class="nav__in">
+      <a class="brand" href="#top" aria-label="Home"><span class="dot" aria-hidden="true"></span>Rofi Pasha Haikal</a>
+      <nav class="navlinks" id="navlinks" aria-label="Primary">
+        <a href="#work">Work</a>
+        <a href="#experience">Experience</a>
+        <a href="#skills">Skills</a>
+        <a href="#about">About</a>
+        <a class="nav-cta" href="#contact">Contact</a>
+      </nav>
+      <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navlinks">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="wrap" id="top">
+
+    <!-- HERO -->
+    <section class="hero container" id="hero">
+      <div class="hero__spot" aria-hidden="true"></div>
+      <div>
+        <span class="now"><span class="live" aria-hidden="true"></span>Open to data analyst roles &amp; internships</span>
+        <h1>
+          <span class="ln"><span>Muhammad Rofi</span></span>
+          <span class="ln"><span>Pasha Haikal</span></span>
+        </h1>
+        <p class="lede">Data analyst and informatics graduate in Jakarta. I turn messy data into clear answers. Most recently <b>CINEMATCH</b>, a film recommender built on 8,340 titles and measured, not guessed.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#work">See the work</a>
+          <a class="btn btn-ghost" href="#contact">Get in touch</a>
+        </div>
+        <p class="featured">Featured build&nbsp; <a href="#work">CINEMATCH, a content-based film recommender</a></p>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="band" id="about">
+      <div class="container">
+        <div class="head">
+          <h2>About</h2>
+        </div>
+        <div class="about-grid">
+          <div class="about-copy">
+            <p><b>I'm a fresh informatics graduate focused on data analysis.</b> My final project took 12.5&nbsp;million raw IMDb records down to a clean dataset of 8,340 films, then built and evaluated a recommendation model in Python and MySQL.</p>
+            <p>What I enjoy is the unglamorous part: cleaning data, checking assumptions, and finding the signal that actually separates one thing from another. On CINEMATCH that meant proving genre barely distinguishes films, so the plot synopsis does most of the work.</p>
+            <p>Outside coursework, I've spent two years on ticketing and crew at large concerts, from Blackpink to NCT Dream and Dream Theater. That's where I learned to stay calm and precise when thousands of people are waiting on you.</p>
+          </div>
+          <dl class="facts">
+            <div class="row"><dt>Focus</dt><dd>Data analysis, SQL, Python</dd></div>
+            <div class="row"><dt>Education</dt><dd>B.Eng Informatics, UNINDRA</dd></div>
+            <div class="row"><dt>GPA</dt><dd><span class="hl">3.60</span> / 4.00</dd></div>
+            <div class="row"><dt>Based in</dt><dd>Jakarta / Depok, Indonesia</dd></div>
+            <div class="row"><dt>Status</dt><dd><span class="hl">Available</span> for hire</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORK -->
+    <section class="band" id="work">
+      <div class="container">
+        <div class="head">
+          <h2>Selected work</h2>
+        </div>
+
+        <!-- Featured: CINEMATCH -->
+        <article class="feature">
+          <div>
+            <div class="kicker">Final-year data project</div>
+            <h3>CINEMATCH</h3>
+            <p>A web app that recommends similar films from their genre, plot, and rating. An audit of the data showed genre alone barely separates titles (a film shares its exact genre set with 99 others on average), so I weighted the plot synopsis to do most of the work, then corrected ratings so low-vote films couldn't game the ranking.</p>
+            <div class="tags">
+              <span class="tag">Data cleaning</span>
+              <span class="tag">TF-IDF</span>
+              <span class="tag">Cosine similarity</span>
+              <span class="tag">Bayesian weighting</span>
+              <span class="tag">Model evaluation</span>
+              <span class="tag">Flask + MySQL</span>
+            </div>
+            <div class="results">
+              <div class="cell"><div class="num gold">0.660</div><div class="cap">Precision@10</div></div>
+              <div class="cell"><div class="num gold">0.985</div><div class="cap">NDCG@10</div></div>
+              <div class="cell"><div class="num">8,340</div><div class="cap">films in dataset</div></div>
+              <div class="cell"><div class="num">12.5M</div><div class="cap">raw records processed</div></div>
+              <div class="cell"><div class="num">18</div><div class="cap">configs benchmarked</div></div>
+              <div class="cell"><div class="num">20</div><div class="cap">evaluators</div></div>
+            </div>
+            <div class="proj-links">
+              <a href="#" data-fill="github">View code</a>
+              <a href="#" data-fill="paper">Read the write-up</a>
+            </div>
+          </div>
+          <figure class="media">
+            <img src="assets/img/cinematch.jpg" alt="Screenshot of the CINEMATCH recommendation interface" loading="lazy" onerror="this.closest('.media').classList.add('is-empty')">
+            <figcaption class="media__label"><span class="frame" aria-hidden="true"></span><b>Add a screenshot</b>assets/img/cinematch.jpg</figcaption>
+          </figure>
+        </article>
+
+        <!-- Sub-projects -->
+        <div class="subprojects">
+          <article class="card">
+            <figure class="media">
+              <img src="assets/img/mi-fathurrahman.jpg" alt="Screenshot of the MI Fathurrahman academic system" loading="lazy" onerror="this.closest('.media').classList.add('is-empty')">
+              <figcaption class="media__label"><span class="frame" aria-hidden="true"></span><b>Add a screenshot</b>assets/img/mi-fathurrahman.jpg</figcaption>
+            </figure>
+            <h4>School academic &amp; administration system</h4>
+            <p>A MySQL-backed system for MI Fathurrahman to manage student and staff records, moving the school off paper files.</p>
+            <div class="tags"><span class="tag">MySQL</span><span class="tag">Web</span></div>
+          </article>
+          <article class="card">
+            <figure class="media">
+              <img src="assets/img/los-calisaros.jpg" alt="Screenshot of the Los Calisaros t-shirt store website" loading="lazy" onerror="this.closest('.media').classList.add('is-empty')">
+              <figcaption class="media__label"><span class="frame" aria-hidden="true"></span><b>Add a screenshot</b>assets/img/los-calisaros.jpg</figcaption>
+            </figure>
+            <h4>Los Calisaros: t-shirt store</h4>
+            <p>A front-end storefront to show and sell t-shirts, hand-coded from scratch in HTML and CSS.</p>
+            <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section class="band" id="experience">
+      <div class="container">
+        <div class="head">
+          <h2>Live events</h2>
+        </div>
+        <p class="lead-para" style="margin-bottom:48px">Two years of crew, usher, and ticketing work at some of the biggest shows in Jakarta.</p>
+
+        <div class="timeline">
+          <div class="xp">
+            <div class="when">Apr 2026</div>
+            <div>
+              <h4>CNBLUE “3LOGY” Live World Tour</h4>
+              <div class="role">Usher <span class="venue">at ICE BSD, Tangerang</span></div>
+              <p>Seated guests and helped manage crowd flow as part of the usher team at an international arena show.</p>
+            </div>
+            <figure class="media thumb">
+              <img src="assets/img/cnblue.jpg" alt="Photo from the CNBLUE event" loading="lazy" onerror="this.closest('.media').classList.add('is-empty')">
+              <figcaption class="media__label"><b>Add photo</b>assets/img/cnblue.jpg</figcaption>
+            </figure>
+          </div>
+
+          <div class="xp">
+            <div class="when">Feb 2026</div>
+            <div>
+              <h4>An Evening with Dream Theater</h4>
+              <div class="role">Ticketing <span class="venue">at Beach City International Stadium</span></div>
+              <p>Checked in and validated tickets, and helped troubleshoot ticketing devices when they failed at the gate.</p>
+              <span class="scale">9,000+ <span>attendees</span></span>
+            </div>
+            <figure class="media thumb">
+              <img src="assets/img/dream-theater.jpg" alt="Photo from the Dream Theater event" loading="lazy" onerror="this.closest('.media').classList.add('is-empty')">
+              <figcaption class="media__label"><b>Add photo</b>assets/img/dream-theater.jpg</figcaption>
+            </figure>
+          </div>
+
+          <div class="xp">
+            <div class="when">Feb 2026</div>
+            <div>
+              <h4>Bryan Adams “Roll With The Punches”</h4>
+              <div class="role">Ticketing <span class="venue">at Beach City International Stadium</span></div>
+              <p>Verified and scanned tickets, and kept the entry queue organised and moving.</p>
+              <span class="scale">7,000+ <span>attendees</span></span>
+            </div>
+            <figure class="media thumb">
+              <img src="assets/img/bryan-adams.jpg" alt="Photo from the Bryan Adams event" loading="lazy" onerror="this.closest('.media').classList.add('is-empty')">
+              <figcaption class="media__label"><b>Add photo</b>assets/img/bryan-adams.jpg</figcaption>
+            </figure>
+          </div>
+
+          <div class="xp">
+            <div class="when">Nov 2025</div>
+            <div>
+              <h4>Blackpink “Born Pink” World Tour</h4>
+              <div class="role">Crew <span class="venue">at Gelora Bung Karno, Jakarta</span></div>
+              <p>Supported operations on a stadium show, managing crowd flow and directing guests to their gates and seats.</p>
+              <span class="scale">60,000+ <span>attendees</span></span>
+            </div>
+            <figure class="media thumb">
+              <img src="assets/img/blackpink.jpg" alt="Photo from the Blackpink event" loading="lazy" onerror="this.closest('.media').classList.add('is-empty')">
+              <figcaption class="media__label"><b>Add photo</b>assets/img/blackpink.jpg</figcaption>
+            </figure>
+          </div>
+
+          <div class="xp">
+            <div class="when">Oct 2025</div>
+            <div>
+              <h4>Scream or Dance</h4>
+              <div class="role">Crew <span class="venue">at Beach City International Stadium</span></div>
+              <p>Supported event operations and managed the flow of medical logistics in and out of the venue.</p>
+              <span class="scale">10,000–15,000 <span>attendees</span></span>
+            </div>
+            <figure class="media thumb">
+              <img src="assets/img/scream-or-dance.jpg" alt="Photo from the Scream or Dance event" loading="lazy" onerror="this.closest('.media').classList.add('is-empty')">
+              <figcaption class="media__label"><b>Add photo</b>assets/img/scream-or-dance.jpg</figcaption>
+            </figure>
+          </div>
+
+          <div class="xp">
+            <div class="when">Oct 2025</div>
+            <div>
+              <h4>Axis Nation Cup</h4>
+              <div class="role">Usher <span class="venue">at Istora Senayan, Jakarta</span></div>
+              <p>Directed attendees and supported crowd management inside and outside the venue.</p>
+              <span class="scale">5,000–8,000+ <span>attendees</span></span>
+            </div>
+            <figure class="media thumb">
+              <img src="assets/img/axis-nation-cup.jpg" alt="Photo from the Axis Nation Cup event" loading="lazy" onerror="this.closest('.media').classList.add('is-empty')">
+              <figcaption class="media__label"><b>Add photo</b>assets/img/axis-nation-cup.jpg</figcaption>
+            </figure>
+          </div>
+
+          <div class="xp">
+            <div class="when">Sep 2025</div>
+            <div>
+              <h4>NCT Dream “The Dream Show 4”</h4>
+              <div class="role">Crew <span class="venue">at JIS, Jakarta</span></div>
+              <p>Supported concert operations and directed guests to their gates and seats.</p>
+              <span class="scale">70,000+ <span>attendees</span></span>
+            </div>
+            <figure class="media thumb">
+              <img src="assets/img/nct-dream.jpg" alt="Photo from the NCT Dream event" loading="lazy" onerror="this.closest('.media').classList.add('is-empty')">
+              <figcaption class="media__label"><b>Add photo</b>assets/img/nct-dream.jpg</figcaption>
+            </figure>
+          </div>
+
+          <div class="xp">
+            <div class="when">Nov 2024</div>
+            <div>
+              <h4>D'Futuro Futurist Summit</h4>
+              <div class="role">Usher</div>
+              <p>Guided participants to the registration, seminar, and seating areas.</p>
+              <span class="scale">1,000–2,000 <span>participants</span></span>
+            </div>
+            <figure class="media thumb">
+              <img src="assets/img/dfuturo.jpg" alt="Photo from the D'Futuro summit" loading="lazy" onerror="this.closest('.media').classList.add('is-empty')">
+              <figcaption class="media__label"><b>Add photo</b>assets/img/dfuturo.jpg</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section class="band" id="skills">
+      <div class="container">
+        <div class="head">
+          <h2>Skills</h2>
+        </div>
+        <div class="skills-grid">
+          <div class="skillgroup">
+            <h4>Data &amp; analytics</h4>
+            <div class="tags">
+              <span class="tag">Data cleaning</span><span class="tag">Preprocessing</span><span class="tag">Exploratory analysis (EDA)</span><span class="tag">Feature engineering</span><span class="tag">Statistical analysis</span><span class="tag">Model evaluation</span><span class="tag">Reporting</span>
+            </div>
+          </div>
+          <div class="skillgroup">
+            <h4>Programming</h4>
+            <div class="tags">
+              <span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">NumPy</span><span class="tag">Scikit-learn</span><span class="tag">Java</span><span class="tag">SQL</span>
+            </div>
+          </div>
+          <div class="skillgroup">
+            <h4>Databases</h4>
+            <div class="tags">
+              <span class="tag">MySQL</span><span class="tag">SQLAlchemy</span>
+            </div>
+          </div>
+          <div class="skillgroup">
+            <h4>Web &amp; tools</h4>
+            <div class="tags">
+              <span class="tag">Flask</span><span class="tag">Git</span><span class="tag">REST APIs</span><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span><span class="tag">Excel</span><span class="tag">Google Workspace</span>
+            </div>
+          </div>
+        </div>
+        <div class="skillgroup" style="margin-top:clamp(28px,5vw,56px)">
+          <h4>How I work</h4>
+          <div class="tags">
+            <span class="tag">Analytical thinking</span><span class="tag">Problem solving</span><span class="tag">Communication</span><span class="tag">Teamwork</span><span class="tag">Adaptability</span><span class="tag">Attention to detail</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section class="band" id="education">
+      <div class="container">
+        <div class="head">
+          <h2>Education</h2>
+        </div>
+        <div class="edu">
+          <div class="yr">2022 – 2026</div>
+          <div>
+            <h4>Bachelor of Informatics Engineering</h4>
+            <div class="school">Universitas Indraprasta PGRI, Jakarta</div>
+            <div class="gpa">GPA 3.60 / 4.00</div>
+            <div class="course">Relevant coursework: Data Mining, Statistics, Database Systems, Data Structures &amp; Algorithms, Systems Analysis &amp; Design, Web Programming, Project Management.</div>
+          </div>
+        </div>
+        <div class="extras">
+          <div class="ex">Attended the seminar “Artificial Intelligence: Challenges and Opportunities in the Era of Technological Transformation,” 2025.</div>
+          <div class="ex">Volunteer with Youth Ranger Indonesia, a youth community organisation.</div>
+          <div class="ex">Ran community education sessions on preventing internet misuse.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact" id="contact">
+      <div class="container">
+        <h2 class="lead-para">Let's talk.</h2>
+        <p class="sub">I'm looking for entry-level data analyst roles and internships. The fastest way to reach me is email.</p>
+        <a class="mailto" href="mailto:hrofi79@gmail.com">hrofi79@gmail.com</a>
+        <div class="socials">
+          <a href="#" data-fill="linkedin"><span class="b" aria-hidden="true"></span>LinkedIn</a>
+          <a href="#" data-fill="github"><span class="b" aria-hidden="true"></span>GitHub</a>
+          <a href="#" data-fill="cv"><span class="b" aria-hidden="true"></span>Download CV</a>
+          <a href="tel:+6287783900979"><span class="b" aria-hidden="true"></span>+62 877-8390-0979</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container foot">
+        <span>© <span id="year">2026</span> Muhammad Rofi Pasha Haikal</span>
+        <span class="made">Built by hand in Jakarta, Indonesia</span>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+  (function(){
+    var nav=document.getElementById('nav');
+    var burger=document.getElementById('burger');
+    var progress=document.getElementById('progress');
+    var links=Array.prototype.slice.call(document.querySelectorAll('.navlinks a[href^="#"]'));
+    var sections=links.map(function(a){return document.querySelector(a.getAttribute('href'));}).filter(Boolean);
+
+    // year
+    document.getElementById('year').textContent=new Date().getFullYear();
+
+    // nav background + scroll progress
+    function onScroll(){
+      var y=window.pageYOffset;
+      nav.classList.toggle('scrolled', y>10);
+      var h=document.documentElement.scrollHeight-window.innerHeight;
+      progress.style.width=(h>0?(y/h*100):0)+'%';
+    }
+    var ticking=false;
+    window.addEventListener('scroll',function(){
+      if(!ticking){window.requestAnimationFrame(function(){onScroll();ticking=false;});ticking=true;}
+    },{passive:true});
+    onScroll();
+
+    // mobile menu
+    burger.addEventListener('click',function(){
+      var open=nav.classList.toggle('open');
+      burger.setAttribute('aria-expanded',open?'true':'false');
+    });
+    document.querySelectorAll('.navlinks a').forEach(function(a){
+      a.addEventListener('click',function(){
+        nav.classList.remove('open');burger.setAttribute('aria-expanded','false');
+      });
+    });
+
+    // scrollspy
+    if('IntersectionObserver' in window){
+      var byId={};links.forEach(function(a){byId[a.getAttribute('href').slice(1)]=a;});
+      var io=new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting){
+            links.forEach(function(l){l.classList.remove('active');});
+            var act=byId[e.target.id];if(act)act.classList.add('active');
+          }
+        });
+      },{rootMargin:'-45% 0px -50% 0px',threshold:0});
+      sections.forEach(function(s){io.observe(s);});
+    }
+
+    /* ------------------------------------------------------------------
+       Fill your links here once. Placeholders stay inert (#) until set.
+       Replace the empty strings below, e.g. linkedin: 'https://linkedin.com/in/your-handle'
+    ------------------------------------------------------------------ */
+    var LINKS={
+      linkedin:'',                 // your LinkedIn URL
+      github:'',                   // your GitHub profile URL
+      cv:'',                       // link/path to your CV PDF, e.g. 'assets/CV.pdf'
+      paper:''                     // optional: link to the CINEMATCH write-up/paper
+    };
+    Object.keys(LINKS).forEach(function(key){
+      var url=LINKS[key];
+      document.querySelectorAll('[data-fill="'+key+'"]').forEach(function(a){
+        if(url){a.setAttribute('href',url); if(/^https?:/.test(url)){a.setAttribute('target','_blank');a.setAttribute('rel','noopener');}}
+        else{a.setAttribute('aria-disabled','true');a.title='Add your '+key+' link in index.html (LINKS object)';}
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
